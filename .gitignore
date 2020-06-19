@@ -2,3 +2,6 @@
 /JavaLibrary1/build/
 /jspwiki-plugins/nbproject/private/
 /target/
+.classpath
+.project
+.settings/

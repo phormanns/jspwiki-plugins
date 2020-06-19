@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-@WebServlet(name = "CustomCSSPluginServlet", urlPatterns = {"/custom-css-plugin.css"} )
+@WebServlet(name = "CustomCSSPluginServlet", urlPatterns = { CustomCSSPlugin.CSS_SERVLET_PATH } )
 public class CustomCSSPluginServlet extends HttpServlet {
 
     @Override
