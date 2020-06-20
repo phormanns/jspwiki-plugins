@@ -17,8 +17,7 @@ public class UseModFilter implements PageFilter {
 
 	@Override
 	public void initialize(Engine engine, Properties properties) throws FilterException {
-		// TODO Auto-generated method stub
-
+		// skip initalization
 	}
 
 	public String preTranslate(final WikiContext wikiContext, final String content) throws FilterException {
@@ -27,23 +26,7 @@ public class UseModFilter implements PageFilter {
 			String currentLine = readLine(reader);
 			final StringBuffer translationBuffer = new StringBuffer();
 			while (currentLine != null) {
-				if (currentLine.contains("{{{") || currentLine.contains("<pre>") || currentLine.startsWith(" ")) {
-					currentLine = translatePreformatted(reader, currentLine);
-				} else {
-					if (currentLine.startsWith(":")) {
-						currentLine = translateIndent(reader, currentLine);
-					}
-					if (currentLine.startsWith("=")) {
-						currentLine = translateTitle(reader, currentLine);
-					}
-					if (currentLine.startsWith("#")) {
-						currentLine = translateItemize(reader, currentLine);
-					}
-					if (currentLine.startsWith("*")) {
-						currentLine = translateItemize(reader, currentLine);
-					}
-					currentLine = translateInlineMarkup(reader, currentLine);
-				}
+				currentLine = translateSingleLine(reader, currentLine);
 				translationBuffer.append(currentLine);
 				translationBuffer.append("\n");
 				currentLine = readLine(reader);
@@ -52,6 +35,36 @@ public class UseModFilter implements PageFilter {
 		} catch (Exception e) {
 			return "%%error\nFehler im Filter: " + e.getMessage() + "\n%%\n";
 		}
+	}
+
+	private String translateSingleLine(final BufferedReader reader, String currentLine) throws IOException {
+		if (currentLine.contains("[{")) {
+			final StringBuffer pluginBuffer = new StringBuffer(currentLine);
+			while (!currentLine.contains("}]")) {
+				currentLine = readLine(reader);
+				pluginBuffer.append("\n");
+				pluginBuffer.append(currentLine);
+			}
+			return pluginBuffer.toString();
+		}
+		if (currentLine.contains("{{{") || currentLine.contains("<pre>") || currentLine.startsWith(" ")) {
+			currentLine = translatePreformatted(reader, currentLine);
+		} else {
+			if (currentLine.startsWith(":")) {
+				currentLine = translateIndent(reader, currentLine);
+			}
+			if (currentLine.startsWith("=")) {
+				currentLine = translateTitle(reader, currentLine);
+			}
+			if (currentLine.startsWith("#")) {
+				currentLine = translateItemize(reader, currentLine);
+			}
+			if (currentLine.startsWith("*")) {
+				currentLine = translateItemize(reader, currentLine);
+			}
+			currentLine = translateInlineMarkup(reader, currentLine);
+		}
+		return currentLine;
 	}
 
 	private String translateItemize(final BufferedReader reader, String currentLine) throws IOException {
@@ -82,14 +95,17 @@ public class UseModFilter implements PageFilter {
 			currentLine = currentLine.replaceAll("'''", "__");
 		}
 		if (currentLine.contains("http://")) {
-			currentLine = translateLink(reader, currentLine);
+			currentLine = translateLink(reader, currentLine, "http://");
+		}
+		if (currentLine.contains("https://")) {
+			currentLine = translateLink(reader, currentLine, "https://");
 		}
 		return currentLine;
 	}
 
-	private String translateLink(final BufferedReader reader, String currentLine) throws IOException {
-		if (currentLine.contains("[http://")) {
-			int startIndex = currentLine.indexOf("[http://");
+	private String translateLink(final BufferedReader reader, String currentLine, String protocol) throws IOException {
+		if (currentLine.contains("[" + protocol)) {
+			int startIndex = currentLine.indexOf("[" + protocol);
 			String translated = currentLine.substring(0, startIndex + 1);
 			String part = currentLine.substring(startIndex + 1);
 			String nextLine = readLine(reader);
@@ -113,7 +129,7 @@ public class UseModFilter implements PageFilter {
 			String text = currentLine.substring(startIndex + link.length() + 2, endIndex);
 			return translated + text + "|" + link + currentLine.substring(endIndex);
 		} else {
-			int startIndex = currentLine.indexOf("http://");
+			int startIndex = currentLine.indexOf(protocol);
 			String translated = currentLine.substring(0, startIndex);
 			String part = currentLine.substring(startIndex);
 			StringTokenizer tokenizer = new StringTokenizer(part, " ]|;\n");
