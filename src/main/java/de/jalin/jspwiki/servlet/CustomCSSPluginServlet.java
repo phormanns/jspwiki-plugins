@@ -13,7 +13,9 @@ import javax.servlet.http.HttpSession;
 @WebServlet(name = "CustomCSSPluginServlet", urlPatterns = { CustomCSSPlugin.CSS_SERVLET_PATH } )
 public class CustomCSSPluginServlet extends HttpServlet {
 
-    @Override
+	private static final long serialVersionUID = 1L;
+
+	@Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         final HttpSession session = req.getSession();
         final Object cssContentObject = session.getAttribute(CustomCSSPlugin.CUSTOM_CSS_ATTRIBUTE);
