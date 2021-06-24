@@ -2,6 +2,7 @@ package de.jalin.jspwiki.plugin;
 
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.wiki.api.core.Context;
@@ -19,8 +20,11 @@ public class CustomCSSPlugin implements Plugin {
 	public String execute(final Context context, final Map<String, String> params) throws PluginException {
         TemplateManager.addResourceRequest(context, TemplateManager.RESOURCE_STYLESHEET, CSS_SERVLET_PATH);
         final String cssBody = params.get( DefaultPluginManager.PARAM_BODY );
-        final HttpSession session = context.getHttpRequest().getSession();
-        session.setAttribute(CUSTOM_CSS_ATTRIBUTE, cssBody);
+        final HttpServletRequest httpRequest = context.getHttpRequest();
+        if (httpRequest != null) {
+    		final HttpSession session = httpRequest.getSession();
+            session.setAttribute(CUSTOM_CSS_ATTRIBUTE, cssBody);
+        }
         return "";
 	}
     
