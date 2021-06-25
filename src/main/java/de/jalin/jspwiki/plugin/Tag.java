@@ -31,7 +31,9 @@ public class Tag implements Plugin {
 				stringBuild.append(" <a href=\"" + 
 						wikiContext.getURL(WikiContext.VIEW, tag) + "\">" + tag + "</a>");
 			}
-			tagManager.register(wikiContext.getPage().getName(), tagsArray);
+			if (!WikiContext.VIEW.equals(wikiContext.getRequestContext())) {
+	 			tagManager.register(wikiContext.getPage().getName(), tagsArray);
+			}
 			stringBuild.append("<br />\n");
 			stringBuild.append("</div>\n");
 			return stringBuild.toString();
