@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.wiki.api.core.Engine;
@@ -53,5 +55,23 @@ public class TagManager {
 		}
 		return res;
 	}
-	
+
+	public Map<String, Integer> tagUsage(int mincount) {
+		final Map<String, Integer> res = new HashMap<>();
+		final Enumeration<String> enumeration = tagsPerPage.keys();
+		while (enumeration.hasMoreElements()) {
+			final String page = enumeration.nextElement();
+			final String[] tags = tagsPerPage.get(page);
+			for (final String tag : tags) {
+				if (res.containsKey(tag)) {
+					int oldValue = res.get(tag);
+					res.put(tag, new Integer(oldValue + 1));
+				} else {
+					res.put(tag, new Integer(1));
+				}
+			}
+		}
+		return res;
+	}
+
 }
