@@ -25,7 +25,7 @@ public class OSMMarkerPlugin implements Plugin {
 		final StringBuilder stringBuild = new StringBuilder("<div style=\"width:" + width + "px;height:" + height + "px;\" id=\"" + mapId + "\">\n</div>\n");
 		stringBuild.append("<script type=\"text/javascript\">\n");
 		stringBuild.append("  var " + mapId + " = L.map('" + mapId + "').setView([" + lat + ", " + lon + "], " + zoom + ");\n");
-		stringBuild.append("  L.tileLayer( 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a>', subdomains: ['a','b','c'] }).addTo( " + mapId + ");");
+		stringBuild.append("  L.tileLayer( 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap-Mitwirkende</a>', subdomains: ['a','b','c'] }).addTo( " + mapId + ");");
 		stringBuild.append("  var marker = L.marker([" + lat + ", " + lon + "]).addTo(" + mapId + ");");
 		stringBuild.append("  marker.bindPopup(\"" + text + "\").openPopup();");
 		stringBuild.append("</script>\n");
