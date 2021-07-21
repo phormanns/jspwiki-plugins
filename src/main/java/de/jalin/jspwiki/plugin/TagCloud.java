@@ -1,6 +1,9 @@
 package de.jalin.jspwiki.plugin;
 
 import java.util.Map;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.apache.wiki.WikiContext;
 import org.apache.wiki.api.core.Context;
@@ -28,7 +31,8 @@ public class TagCloud implements Plugin {
 			final TagManager tagManager = TagManager.getTagManager(wikiContext.getEngine());
 			final Map<String, Integer> tagUsage = tagManager.tagUsage(mincount);
 			int max = 0;
-			for (final String page : tagUsage.keySet()) {
+			final Set<String> keySet = tagUsage.keySet();
+			for (final String page : keySet) {
 				if (tagUsage.get(page) > max) {
 					max = tagUsage.get(page); 
 				}
@@ -38,7 +42,8 @@ public class TagCloud implements Plugin {
 				factor = 5.0f / max;
 			}
 			final StringBuilder stringBuild = new StringBuilder("<div class=\"tagcloud\">\n");
-			for (final String tag : tagUsage.keySet()) {
+			final SortedSet<String> sortedKeys = new TreeSet<>(keySet);
+			for (final String tag : sortedKeys) {
 				final Integer count = tagUsage.get(tag);
 				if (count >= mincount) {
 					float f = count * factor;
