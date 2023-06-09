@@ -65,9 +65,9 @@ public class TagManager {
 			for (final String tag : tags) {
 				if (res.containsKey(tag)) {
 					int oldValue = res.get(tag);
-					res.put(tag, new Integer(oldValue + 1));
+					res.put(tag, Integer.valueOf(oldValue + 1));
 				} else {
-					res.put(tag, new Integer(1));
+					res.put(tag, Integer.valueOf(1));
 				}
 			}
 		}
